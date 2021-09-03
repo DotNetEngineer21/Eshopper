@@ -1,0 +1,202 @@
+﻿@model IEnumerable<EShopper.Models.ProductModel>
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+<section class="module-small">
+    <div class="container">
+        <form class="row">
+            <div class="col-sm-4 mb-sm-20">
+                <select class="form-control" id="selectSorting">
+                    <option selected="selected">Default Sorting</option>
+                    @*<option>Popular</option>*@
+                    <option>Latest</option>
+                    @*<option>Average Price</option>*@
+                    <option>High to Low Price</option>
+                    <option>Low to High Price</option>
+                </select>
+            </div>
+            <div class="col-sm-2 mb-sm-20">
+                <select class="form-control" id="selectCategory">
+                    <option selected="selected">All</option>
+                    <option>Women</option>
+                    <option>Men</option>
+                </select>
+            </div>
+            <div class="col-sm-3 mb-sm-20">
+                <select class="form-control" id="selectProduct">
+                    <option selected="selected">All</option>
+                    @if (ViewBag.CategoryList != null)
+                    {
+                        foreach (var item in ViewBag.CategoryList)
+                        {
+                            <option id="@item.ProductId">@item.ProductName</option>
+                        }
+                    }
+                    @*<option>Coats</option>
+                        <option>Jackets</option>
+                        <option>Dresses</option>
+                        <option>Jumpsuits</option>
+                        <option>Tops</option>
+                        <option>Trousers</option>*@
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <button class="btn btn-block btn-round btn-g" type="button" id="btnApply">Apply</button>
+            </div>
+        </form>
+    </div>
+</section>
+<hr class="divider-w">
+<section class="module-small">
+    <div class="container">
+        <div class="row multi-columns-row">
+            <div id="productLists">
+                <div id="productList"></div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        
+                        @*<div class="pagination font-alt"><a href="#"><i class="fa fa-angle-left"></i></a><a class="active" href="#">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#"><i class="fa fa-angle-right"></i></a></div>*@
+                    </div>
+                </div>
+                <div id="page-selection"></div>
+            </div>                           
+        </div>
+    </div>
+</section>
+
+<script src="~/assets/lib/jquery/dist/jquery.js"></script>
+<script src="~/Scripts/jquery.twbsPagination.js"></script>
+<script type="text/javascript">
+    var sortby;
+    var category;
+    var product;
+    var firstload = true;
+    $(document).ready(function () {
+        sortby = $('#selectSorting').val();
+        category = $('#selectCategory').val();
+        product = $('#selectProduct').val();
+        GetProductList(sortby, category, product);
+    });
+    $('#btnApply').click(function () {
+        //debugger;
+        sortby = $('#selectSorting').val();
+        category = $('#selectCategory').val();
+        product = $('#selectProduct').val();
+        GetProductList(sortby, category, product);
+    });
+    function GetProductList(sortby, category, product) {
+        //debugger;
+        var pageno = 1;
+        var paging = 0;
+        $.ajax({
+            url: '/Home/GetProductsWithFilter',
+            type: "GET",
+            data: { "sortby": sortby, "category": category, "product": product,"pageNo": pageno, "paging": paging },
+           // data: { pageNo: pageno, paging: paging}, 
+            success: function (result) {
+                //debugger;
+                if (result) {
+                    //debugger;
+                    GetJobData(result, 1, 0);
+                }
+            },
+            error: function (xhr, status) {
+                //debugger;
+                alert(status);
+            }
+        });
+    }
+    function GetJobData(data, pageNo, paging) {
+        //debugger;
+        if (data != '' || data != 0) {
+            $('#productList').empty();
+            var count = 0;
+            $.each(data, function (k, item) {
+                if (count == 0 && paging < 1) {
+                    //debugger;
+                    Bind_jobitem_Paging(data.length, data[k].currentPage);
+                }
+                count += 1;
+            });
+        }
+        else {
+            $("#productList").append('<div class="job-ad-item"><div class="item-info">No job found.</div></div>');
+        }
+    }
+    function Bind_jobitem_Paging(totalCount, startPage) {
+        //debugger;
+        var pageSize = 10;
+        //if (totalCount > pageSize) {
+        var pageMod = totalCount % pageSize;
+        //}
+        //else
+        //{
+        //var pageMod = pageSize % totalCount;
+        //}
+        var pageNo;
+        if (pageMod > 0) {
+            pageNo = parseInt(totalCount / pageSize) + 1;
+        }
+        else {
+            pageNo = parseInt(totalCount / pageSize);
+        }
+        paginationstock.twbsPagination('destroy');
+        paginationstock.twbsPagination({
+            totalPages: pageNo,
+            startPage: startPage,
+            visiblePages: 10,
+            onPageClick: function (event, page) {
+                //debugger;
+                if (firstload == false) {
+                    SearchproductList(page, 1)
+                }
+                else {
+                    firstload = false;
+                    SearchproductList(page, 1)
+                }
+            }
+        });
+    }
+    var paginationstock = $('#productLists > #page-selection').twbsPagination({
+        totalPages: 50,
+        startPage: 1,
+        visiblePages: 1
+    });
+    function SearchproductList(pageNo, paging) {
+        //debugger;
+       // $('#JobsList').empty();
+        $.ajax({
+            url: '/Home/ProductItemLists',
+            type: "GET",
+            dataType: "JSON",
+            data: { "pageNo": pageNo, "paging": paging },
+            success: function (result) {
+                //debugger;
+                $("#productList").empty();
+                $.each(result, function (k, item) {
+                    var html = "";
+                    html += "<div class='col-sm-6 col-md-3 col-lg-3'>";
+                    html += "<div class='shop-item'>";
+                    html += "<div class='shop-item-image'>";
+                    html += "<img src='../assets/images/ProductImages/" + result[k].ProductId + ".jpeg' alt='Accessories Pack' style='height: 357px;width: 262px;'/>";
+                    html += "<div class='shop-item-detail'>";
+                    html += "<a class='btn btn-round btn-b' href='/Home/ProductDetails?id=" + result[k].ProductId + "'>";
+                    html += "<span class='icon-basket'>View</span></a><br /><br />";
+                    //html += "<a class='btn btn-round btn-b'><span class='icon-basket'>Add To Cart</span></a>";
+                    html += "</div>";
+                    html += "</div>";
+                    html += "<h4 class='shop-item-title font-alt'>";
+                    html += "<a href= '#'>" + result[k].CategoryName + "'s " + result[k].ProductName + "</a>";
+                    html += "</h4>£" + result[k].Price;
+                    html += "</div>";
+                    html += "</div>";
+                    $("#productList").append(html);
+                });
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    }
+</script>

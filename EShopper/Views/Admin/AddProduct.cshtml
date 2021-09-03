@@ -1,0 +1,312 @@
+﻿@model EShopper.Models.ProductModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+<div class="col-md-8 col-lg-offset-2">
+    <div class="card">
+        <div class="card-header card-header-icon" data-background-color="rose">
+            <i class="material-icons">perm_identity</i>
+        </div>
+        <div class="card-content">
+            <h4 class="card-title">
+                Product Details
+            </h4>
+            @*@if (Model != null)
+                {
+                    <form action="~/Admin/EditProduct" method="post" enctype="multipart/form-data">
+                        <div class="row">@Html.HiddenFor(model => model.ProductId)
+                            <label class="col-sm-2 label-on-left">Category</label>
+                            <div class="col-lg-5 col-md-6 col-sm-3">
+                                <select id="ddlCategory" onchange="SelectCountryDropdown();" class="selectpicker" data-style="select-with-transition" title="Single Select" data-size="7" name="CategoryId">
+                                    <option disabled selected> Choose Category</option>
+                                    @foreach (var item in ViewBag.Categories)
+                                    {
+                                        if (Model.CategoryId == item.CategoryId)
+                                        {
+                                            <option selected value="@item.CategoryId">@item.CategoryName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.CategoryId">@item.CategoryName</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group label-floating is-empty">
+                                    <label class="control-label">Product Name</label>
+                                </div>
+                                <div>
+                                    @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control", @style = "text-transform: capitalize;", @required = "required" } })
+                                    @*<input type="text" class="form-control" name="FirstName" required="required">
+                                </div>
+                                <span class="material-input"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group label-floating is-empty">
+                                    <label class="control-label">Price</label>
+                                </div>
+                                <div>
+                                    @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control", @style = "text-transform: capitalize;", @required = "required", @type = "number" } })
+                                    @*<input type="text" class="form-control" name="FirstName" required="required">
+                                </div>
+                                <span class="material-input"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-rose pull-right bottom-right">Update</button>
+
+                        <div class="clearfix"></div>
+                    </form>
+                }
+                else
+                {*@
+            <form action="~/Admin/AddProduct" method="post" enctype="multipart/form-data">
+                @Html.HiddenFor(model => model.ProductId)
+                @Html.HiddenFor(model => model.Created)
+                <input id="hdnCategoryId" name="CategoryId" type="hidden" value="@Model.CategoryId" />
+                <input id="hdnSubCategoryId" name="SubCategoryId" type="hidden" value="@Model.SubCategoryId" />
+                <div class="row">
+                    <label class="col-sm-2 label-on-left">Category</label>
+                    <div class="col-lg-5 col-md-6 col-sm-3">
+                        <select id="ddlCategory" onchange="SelectCategoryDropdown();" class="selectpicker" data-style="select-with-transition" title="Single Select" data-size="7" name="ddlCategory" required>
+                            <option disabled selected> Choose Category</option>
+                            @foreach (var item in Model.CategoryList)
+                            {
+                                if (Model.CategoryId == item.CategoryId)
+                                {
+                                    <option selected value="@item.CategoryId">@item.CategoryName</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.CategoryId">@item.CategoryName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2 label-on-left">SubCategory</label>
+                    <div class="col-lg-5 col-md-6 col-sm-3">
+                        @*<select id="ddlSubCategory" class="selectpicker" data-style="select-with-transition" title="Single Select" data-size="7" name="SubCategoryId" required>
+                            </select>*@
+                        <select id="ddlSubCategory" class="form-control dropdown1" onchange="SelectSubCategoryDropdown();" name="ddlSubCategory"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Product Name</label>
+                        </div>
+                        <div>
+                            @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control", @style = "text-transform: capitalize;", @required = "required" } })
+                            @*<input type="text" class="form-control" name="FirstName" required="required">*@
+                        </div>
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Description</label>
+                            <div class="form-group label-floating">
+                                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", size = "16", @style = "text-transform: capitalize;", @required = "required" })
+                                @*@Html.TextAreaFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", size = "16", @style = "text-transform: capitalize;", @required = "required" } })*@
+                                @*<textarea class="form-control" rows="5"></textarea>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Price</label>
+                        </div>
+                        <div>
+                            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control", @style = "text-transform: capitalize;", @required = "required", @type = "number" } })
+                            @*<input type="text" class="form-control" name="FirstName" required="required">*@
+                        </div>
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-1 label-on-left">Size</label>
+                    <div class="col-sm-11">
+                        <div class="checkbox checkbox-inline" style="margin-top: 0px;">
+                            <label>
+                                <input type="checkbox" name="SizeXS" />XS
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-inline">
+                            <label>
+                                <input type="checkbox" name="SizeS" />S
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-inline">
+                            <label>
+                                <input type="checkbox" name="SizeM" />M
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-inline">
+                            <label>
+                                <input type="checkbox" name="SizeL" />L
+                            </label>
+                        </div>
+                        <div class="checkbox checkbox-inline">
+                            <label>
+                                <input type="checkbox" name="SizeXL" />XL
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">Size</label>
+                        </div>
+                        <div>
+                            <label class="radio-inline"><input type="radio" name="Size" value="XS" checked="checked"> XS </label>
+                            <label class="radio-inline"><input type="radio" name="Size" value="S"> S </label>
+                            <label class="radio-inline"><input type="radio" name="Size" value="M"> M </label>
+                            <label class="radio-inline"><input type="radio" name="Size" value="L"> L </label>
+                            <label class="radio-inline"><input type="radio" name="Size" value="XL"> XL </label>
+                        </div>
+                    </div>*@
+                    @*<div class="col-md-6">
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Size</label>
+                        </div>
+
+                        <div>*@
+                            @*<div class="size-wrap">
+                                    <p class="size-desc">
+                                        <a href="#" class="size size-1">xs</a>
+                                        <a href="#" class="size size-2">s</a>
+                                        <a href="#" class="size size-3">m</a>
+                                        <a href="#" class="size size-4">l</a>
+                                        <a href="#" class="size size-5">xl</a>
+                                        <a href="#" class="size size-5">xxl</a>
+                                    </p>
+                                </div>*@
+                            @*@Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control", @style = "text-transform: capitalize;", @required = "required" } })*@
+                            @*<input type="text" class="form-control" name="FirstName" required="required">*@
+                        @*</div>
+                        <span class="material-input"></span>
+                    </div>*@
+                @*</div>*@
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">Color</label>
+                        </div>
+                        <div>
+                            @Html.EditorFor(model => model.Color, new { htmlAttributes = new { @class = "form-control",@id= "colorValue",@name="Color", @value = "#123456", @style = "text -transform: capitalize;", @required = "required" } })
+                            <div id="demo" style="color: red; font-size: 1.4em">jQuery.js is not present. You must install jQuery in this folder for the demo to work.</div>
+                            @*<div class="form-item">
+                                <label for="color">Color:</label>*@
+                            <input type="text" id="color"  value="#123456" />
+                            @*</div>*@
+
+                            @*@Html.EditorFor(model => model.Color, new { htmlAttributes = new { @class = "form-control",@id= "color", @value = "#123456", @style = "text -transform: capitalize;", @required = "required" } })*@
+                            <div id="picker"></div>
+                            @*<input type="text" class="form-control" name="FirstName" required="required">*@
+                        </div>
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <label class="col-sm-2 label-on-left">Product Image</label>
+                    <div class="col-md-3 col-sm-4">
+                        <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                            <div class="fileinput-new thumbnail img-circle">
+                                @*<img src="../Content/images/placeholder.jpg" alt="...">*@
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail img-circle"></div>
+                            <div>
+                                <span class="btn btn-round btn-rose btn-file">
+                                    <span class="fileinput-new">Add Image</span>
+                                    <span class="fileinput-exists">Change</span>
+                                    @Html.EditorFor(model => model.ProductImage, new { htmlAttributes = new { @type = "file", @class = "fileinput-new", @required = "true" } })
+                                </span>
+                                <br />
+                                <a href="#pablo" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-rose pull-right bottom-right">Update</button>
+                <div class="clearfix"></div>
+            </form>
+            @*}*@
+        </div>
+    </div>
+</div>
+
+@*<script src="~/js/jquery.min.js"></script>*@
+<script src="~/Content/Scripts/jquery.js"></script>
+<script src="../assets/js/farbtastic.js"></script>
+<link href="~/assets/css/farbtastic.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {
+        debugger;
+        $('#demo').hide();
+        $('#picker').farbtastic('#color');
+    });
+    $(':input[type=number]').on('mousewheel', function (e) {
+        debugger;
+        $(this).blur();
+    });    
+    function SelectCategoryDropdown() {
+        debugger;
+        $("#hdnCategoryId").val($("#ddlCategory option:selected").val());
+        BindSubCategory()
+    }
+    function SelectSubCategoryDropdown() {
+        $("#hdnSubCategoryId").val($("#ddlSubCategory option:selected").val());
+    }
+    function BindSubCategory() {
+        debugger;
+        var categoryId = $("#hdnCategoryId").val();
+        $("#ddlSubCategory").html("");
+        var items = "<option value=''> Select SubCategory </option>";
+        $.ajax({
+            url: '/Admin/GetCategorySubCategories',
+            type: "GET",
+            dataType: "JSON",
+            data: { "CategoryId": categoryId },
+            success: function (data) {
+                debugger;
+                $.each(data, function (i, item) {
+                    debugger;
+                    if ($("#hdnCategoryId").val() != null) {
+                        var subcategoryId = $("#hdnSubCategoryId").val();
+
+                        if (subcategoryId == item.SubCategoryId) {
+                            items += "<option selected value='" + item.SubCategoryId + "'>" + (item.SubCategoryName) + "</option>";
+                            //BindCity()
+                        }
+                        else {
+                            items += "<option value='" + item.SubCategoryId + "'>" + (item.SubCategoryName) + "</option>";
+                        }
+                    }
+                    else {
+                        items += "<option value='" + item.SubCategoryId + "'>" + (item.SubCategoryName) + "</option>";
+                    }
+                });
+                $("#ddlSubCategory").html(items);
+            }
+        });
+    }
+</script>

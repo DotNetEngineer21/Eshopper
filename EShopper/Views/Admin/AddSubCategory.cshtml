@@ -1,0 +1,54 @@
+﻿@model EShopper.Models.SubCategoryModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="col-md-8 col-lg-offset-2">
+    <div class="card">
+        <div class="card-header card-header-icon" data-background-color="rose">
+            <i class="material-icons">perm_identity</i>
+        </div>
+        <div class="card-content">
+            <h4 class="card-title">
+                @*Update Details*@
+            </h4>
+            <form action="~/Admin/AddSubCategory" method="post" enctype="multipart/form-data">
+                @Html.HiddenFor(model => model.SubCategoryId)
+                @Html.HiddenFor(model => model.Created)
+                <div class="row">
+                    <label class="col-sm-2 label-on-left">Category</label>
+                    <div class="col-lg-5 col-md-6 col-sm-3">
+                        <select id="ddlCategory" onchange="SelectCountryDropdown();" class="selectpicker" data-style="select-with-transition" title="Single Select" data-size="7" name="CategoryId" required>
+                            <option disabled selected> Choose Category</option>
+                            @foreach (var item in Model.CategoryList)
+                            {
+                                if (Model.CategoryId == item.CategoryId)
+                                {
+                                    <option selected value="@item.CategoryId">@item.CategoryName</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.CategoryId">@item.CategoryName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group label-floating is-empty">
+                            <label class="control-label">SubCategory Name</label>
+                        </div>
+                        <div>
+                            @Html.EditorFor(model => model.SubCategoryName, new { htmlAttributes = new { @class = "form-control", @style = "text-transform: capitalize;", @required = "required" } })
+                         </div>
+                        <span class="material-input"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-rose pull-right bottom-right">Update</button>
+                <div class="clearfix"></div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/Content/Scripts/jquery.js"></script>

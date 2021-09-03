@@ -1,0 +1,19 @@
+﻿@model IEnumerable<EShopper.Models.ProductModel>
+@if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+        <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="shop-item">
+                <div class="shop-item-image">
+                    <img src="~/assets/images/ProductImages/@(item.ProductId).jpeg" alt="Accessories Pack" />
+                    <div class="shop-item-detail">
+                        <a class="btn btn-round btn-b" href="~/Home/ProductDetails?id=@item.ProductId"><span class="icon-basket">View</span></a><br /><br />
+                        <a class="btn btn-round btn-b"><span class="icon-basket">Add To Cart</span></a>
+                    </div>
+                </div>
+                <h4 class="shop-item-title font-alt"><a href="#">@item.CategoryName @item.ProductName</a></h4>£@item.Price
+            </div>
+        </div>
+    }
+}
